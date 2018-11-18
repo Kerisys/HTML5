@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body onload="txtChangeListener()">
+    <script>
+        String.prototype.format = function () {
+            var formatted = this;
+            for (var i = 0; i < arguments.length; i++) {
+                var regexp = new RegExp('\\{' + i + '\\}', 'gi');
+                formatted = formatted.replace(regexp, arguments[i]);
+            }
+            return formatted;
+        };
+        /* Combination */{
+            // Pick
+            // nCk = Fact(n)/(Fact(k)*Fact(n-k)
+            //let n = selectorPick.selectedIndex > 0 ? input.length : input.length - 1; 
+            //let k = selectorPick.selectedIndex > 0 ? count.value  : count.value  - 1;
+            //let comb = Factorial(n) / (Factorial(k) * Factorial(n - k));
+            //console.log('{0} = {1}!/({2}! x ({1}-{2})!)'.format( comb, n, k, n, k));
+        }
+        /* Factorial(n) */ {
+            let cache = [1, 1];
+            function Factorial(n) {
+                if (cache[n] == undefined) {
+                    for (let i = cache.length; i <= n; ++i) {
+                        cache[i] = i * cache[i - 1];
+                    }
+                }
+                return cache[n];
+            }
+        }
+        function ShuffleArray(elements) {
+            for (let i = 0; i < elements.length; ++i)
+            {
+                let rand = Math.floor(Math.random() * elements.length);
+
+                let temp       = elements[i];
+                elements[i] = elements[rand];
+                elements[rand] = temp;
+            }
+            return elements;
+        }
+        function Pick(arrData, k) { // Array, nCk
+            k = Math.min(k, arrData.length);
+            var stack = [];
+            for (let depth = 0; depth < k; ++depth) {
+                let rand = Math.floor(Math.random() * arrData.length);
+
+                stack.push(arrData.splice(rand, 1));
+            }
+            return stack;
+        }
+        function ShuffleBtnClick() {
+            var input  = document.getElementById('txtInput').value.split(/\s*,\s*/);
+            const output = document.getElementById('txtResult');
+            const selectorPick  = document.getElementById('selectorPick');
+            const selectorCount = document.getElementById('selectorCount');
+
+            let n = input.length;
+            let k = selectorCount.selectedIndex;
+            if (k == 0) k = input.length;
+
+            /* Pick Element  */
+            if (selectorPick.selectedIndex > 0) { // Select Element
+                --n;
+                let pickIdx = selectorPick.selectedIndex - 1;
+                let ignore = input.splice(pickIdx, 1);
+                input = Pick(input, --k);
+                input.push(ignore);
+            } else {
+                input = Pick(input, k);
+            }
+            
+            
+            let comb = Factorial(n) / (Factorial(k) * Factorial(n - k));
+            console.log('Pick => {0}C{1} = {0}!/({1}! x ({0}-{1})!) = {2}'.format(n, k, comb));
+
+            var MAX_COUNT = Math.min(10, Factorial(k)); // result.length < 10
+
+            let resultArray = [];
+            output.value = "";
+            while (resultArray.length < MAX_COUNT) {
+                // let result = Pick(input, k).toString()+"\n"; //nCk                
+                let result = ShuffleArray(input).toString() + "\n";
+               
+                if (!resultArray.includes(result)) {
+                    resultArray.push(result);
+                    output.value += result;
+                }
+            }
+        }
+        function txtChangeListener() {
+            const list = document.getElementById('txtInput').value.split(/\s*,\s*/);
+            const selectorCount = document.getElementById('selectorCount');
+            const selectorPick = document.getElementById('selectorPick');
+
+            while (selectorCount.length > 1) {
+                selectorCount.remove(selectorCount.length - 1);
+            }
+
+            while (selectorPick.length > 1) {
+                selectorPick.remove(selectorPick.length - 1);
+            }
+            for (i in list) {
+                let optionCount = document.createElement("option");
+                optionCount.text = i*1+1;
+                selectorCount.add(optionCount);
+
+                let optionPick = document.createElement("option");
+                optionPick.text = list[i];
+                selectorPick.add(optionPick);
+            }
+        }
+    </script>
+    <p><input type="text" id="txtInput" style="width:50%;" onchange="txtChangeListener()" value="0, 1, 2, 3, 4, 5, 6, 7, 8, 9" /></p>
+    <p>
+        중에서
+        <select id="selectorPick">
+            <option selected></option>
+        </select>
+        를 포함한
+        <select id="selectorCount">
+            <option selected></option>
+        </select>
+        개를 
+        <button onclick="ShuffleBtnClick()"> 뽑아서 섞는다. </button>
+    </p>
+    <textarea rows="11" cols="50" id="txtResult"></textarea>
+</body>
+</html>
+
