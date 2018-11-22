@@ -12,14 +12,7 @@
             }
             return formatted;
         };
-        /* Combination */{
-            // Pick
-            // nCk = Fact(n)/(Fact(k)*Fact(n-k)
-            //let n = selectorPick.selectedIndex > 0 ? input.length : input.length - 1; 
-            //let k = selectorPick.selectedIndex > 0 ? count.value  : count.value  - 1;
-            //let comb = Factorial(n) / (Factorial(k) * Factorial(n - k));
-            //console.log('{0} = {1}!/({2}! x ({1}-{2})!)'.format( comb, n, k, n, k));
-        }
+
         /* Factorial(n) */ {
             let cache = [1, 1];
             function Factorial(n) {
@@ -67,24 +60,19 @@
                 --n;
                 let pickIdx = selectorPick.selectedIndex - 1;
                 let ignore = input.splice(pickIdx, 1);
-                input = Pick(input, --k);
+                input = Pick(input, k-1);
                 input.push(ignore);
             } else {
                 input = Pick(input, k);
             }
-            
-            
-            let comb = Factorial(n) / (Factorial(k) * Factorial(n - k));
-            console.log('Pick => {0}C{1} = {0}!/({1}! x ({0}-{1})!) = {2}'.format(n, k, comb));
 
             var MAX_COUNT = Math.min(10, Factorial(k)); // result.length < 10
-
             let resultArray = [];
             output.value = "";
             while (resultArray.length < MAX_COUNT) {
-                // let result = Pick(input, k).toString()+"\n"; //nCk                
+                // let result = Pick(input, k).toString()+"\n"; //nCk
                 let result = ShuffleArray(input).toString() + "\n";
-               
+
                 if (!resultArray.includes(result)) {
                     resultArray.push(result);
                     output.value += result;
@@ -105,7 +93,7 @@
             }
             for (i in list) {
                 let optionCount = document.createElement("option");
-                optionCount.text = i*1+1;
+                optionCount.text = i * 1 + 1;
                 selectorCount.add(optionCount);
 
                 let optionPick = document.createElement("option");
@@ -114,7 +102,7 @@
             }
         }
     </script>
-    <p><input type="text" id="txtInput" style="width:50%;" onchange="txtChangeListener()" value="0, 1, 2, 3, 4, 5, 6, 7, 8, 9" /></p>
+    <p><input type="text" id="txtInput" style="width:50%;" onchange="txtChangeListener()" value="a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z" /></p>
     <p>
         중에서
         <select id="selectorPick">
@@ -124,7 +112,7 @@
         <select id="selectorCount">
             <option selected></option>
         </select>
-        개를 
+        개를
         <button onclick="ShuffleBtnClick()"> 뽑아서 섞는다. </button>
     </p>
     <textarea rows="11" cols="50" id="txtResult"></textarea>
